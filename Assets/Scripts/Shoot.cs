@@ -12,7 +12,7 @@ public class Shoot : MonoBehaviour
         rigidbody = GetComponent <Rigidbody> ();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (Input.GetMouseButtonDown(0)||Input.GetMouseButtonDown(1))
         {
@@ -27,14 +27,19 @@ public class Shoot : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             Transform objectHit = hit.transform;
-            hit.rigidbody.AddForce(Vector3.forward);
-            if (Input.GetMouseButtonDown(0))
+            if (hit.transform.tag == "Entity")
             {
-                hit.transform.GetComponent<MeshRenderer>().material.color = Color.red;
-            }
-            else if(Input.GetMouseButtonDown(1))
-            {
-                hit.transform.GetComponent<MeshRenderer>().material.color = Color.white;
+                hit.transform.GetComponent<AudioSource>().Play();
+                if (Input.GetMouseButtonDown(0))
+                {
+                    hit.transform.GetComponent<MeshRenderer>().material.color = Color.red;
+                    hit.rigidbody.AddForce((hit.transform.position - this.transform.position).normalized * 1000f);
+                }
+                else if (Input.GetMouseButtonDown(1))
+                {
+                    hit.transform.GetComponent<MeshRenderer>().material.color = Color.white;
+                    hit.rigidbody.AddForce((this.transform.position - hit.transform.position).normalized * 1000f);
+                }
             }
         }
     }
